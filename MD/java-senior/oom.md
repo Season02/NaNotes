@@ -3,11 +3,12 @@
 
 # （模板！！！）背景（模板！！！，原文https://github.com/crossoverJie/JCSprout/blob/master/docs/jvm/JVM-concurrent-HashSet-problem.md）
 
-公司是做运维监控产品的，产品是部署在客户环境上运行，然后由当地的运维同事看着。
+公司是做运维监控产品的，产品是部署在客户环境上运行，然后由当地的运维同事看管。
 某天突然收到一个现场的同事发来消息，说产品瘫痪了，界面进不去，然后就让运维查
 日志，立马就发现有 oom 异常。
-还好在启动脚本中加上了dump 配置 -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/heap/dump
-于是立马让运维把dump文件传回来开始分析问题。
+通过 jstat -gcutil <pid> 2000 命令查看，FGC已经九百多次了，已经完蛋了。
+因为在启动脚本中堆溢出配置 -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/heap/dump
+于是让运维把dump文件传回来开始分析问题。
 另外，就算没有上面的配置，也可以通过命令手动生成dump文件
 
 <!--more-->
@@ -16,19 +17,13 @@
 
 简单介绍下出问题的这个应用，它是通过`kafka`从上游获取数据，处理后再放入下游`kafka`。
 
-是个标准的消费生产模式的应用。
+是个标准的消费生产模式的应用。线上项目的最大堆内存设置为10G，这都能溢出还是有些意外。
 
-而报警的队列正好就是这个线程池的队列。
-
-
-
-跟踪代码发现构建线程池的方式如下：
-
+拿到dump文件后使用`VisualVM`分析，很快就发现其中占空间最大的是一个 LinkedBlockingQueue 对象，
+通过名称跟进到代码中发现在项目中使用这个队列来缓冲从`kafka`收到的数据，而且这个队列的大小被设置
+为了50W
 ```java
-ThreadPoolExecutor executor = new ThreadPoolExecutor(coreSize, maxSize,
-              0L, TimeUnit.MILLISECONDS,
-              new LinkedBlockingQueue<Runnable>());;
-             put(poolName,executor);
+LinkedBlockingQueue receiveQueue = new LinkedBlockingQueue<String>(500000);
 ```
 
 采用的是默认的 `LinkedBlockingQueue` 并没有指定大小（这也是个坑），于是这个队列的默认大小为 `Integer.MAX_VALUE`。
