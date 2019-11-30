@@ -19,38 +19,22 @@
 
 是个标准的消费生产模式的应用。线上项目的最大堆内存设置为10G，这都能溢出还是有些意外。
 
-拿到dump文件后使用`VisualVM`分析，很快就发现其中占空间最大的是一个 LinkedBlockingQueue 对象，
-通过名称跟进到代码中发现在项目中使用这个队列来缓冲从`kafka`收到的数据，而且这个队列的大小被设置
-为了50W
-```java
-LinkedBlockingQueue receiveQueue = new LinkedBlockingQueue<String>(500000);
-```
-
-采用的是默认的 `LinkedBlockingQueue` 并没有指定大小（这也是个坑），于是这个队列的默认大小为 `Integer.MAX_VALUE`。
-
-由于应用已经重启，只能从仅存的线程快照和内存快照进行分析。
-
-
 
 ## 内存分析
 
-先利用 `MAT` 分析了内存，的到了如下报告。
+拿到`dump`文件后使用`VisualVM`分析，很快就发现其中有大量的数组对象占空间，继续定位发现他们都来源于
+一个 LinkedBlockingQueue 对象。
 
+![](https://i.loli.net/2019/11/30/R3PB26fsuzh9QwH.jpg)
 
+通过名称在代码搜索发现在项目中使用这个队列来缓冲从`kafka`收到的数据
 
-![](https://i.loli.net/2019/07/19/5d3138538800334258.jpg)
+```java
+LinkedBlockingQueue receiveQueue = new LinkedBlockingQueue<String>(500000);
+```
+而且这个队列的大小被设置为了50W，这就很恐怖了。
 
-
-
-其中有两个比较大的对象，一个就是之前线程池存放任务的 `LinkedBlockingQueue`，还有一个则是 `HashSet`。
-
-
-
-当然其中队列占用了大量的内存，所以优先查看，`HashSet` 一会儿再看。
-
-
-
->  由于队列的大小给的够大，所以结合目前的情况来看应当是线程池里的任务处理较慢，导致队列的任务越堆越多，至少这是目前可以得出的结论。
+>  缓冲队列设置的过大，结合目前的情况来看应当是后续处理过慢导致队列的任务越堆越多，至少这是目前可以得出的结论。
 
 
 
