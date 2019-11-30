@@ -22,8 +22,8 @@
 
 ## 内存分析
 
-拿到`dump`文件后使用`VisualVM`分析，很快就发现其中有大量的数组对象占空间，继续定位发现他们都来源于
-一个 LinkedBlockingQueue 对象。
+拿到`dump`文件后使用`VisualVM`分析，很快就发现其中有大量的大数组对象占空间，继续定位
+发现他们都来源于一个 LinkedBlockingQueue 对象，这个队列已经基本把堆内存用光了。
 
 ![](https://i.loli.net/2019/11/30/R3PB26fsuzh9QwH.jpg)
 
@@ -32,7 +32,7 @@
 ```java
 LinkedBlockingQueue receiveQueue = new LinkedBlockingQueue<String>(500000);
 ```
-而且这个队列的大小被设置为了50W，这就很恐怖了。
+而且这个队列的大小被设置为了50W，很恐怖。
 
 >  缓冲队列设置的过大，结合目前的情况来看应当是后续处理过慢导致队列的任务越堆越多，至少这是目前可以得出的结论。
 
