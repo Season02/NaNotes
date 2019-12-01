@@ -1,7 +1,7 @@
 
 
 
-# （模板！！！）背景（模板！！！，原文https://github.com/crossoverJie/JCSprout/blob/master/docs/jvm/JVM-concurrent-HashSet-problem.md）
+背景
 
 公司是做运维监控产品的，产品是部署在客户环境上运行，然后由当地的运维同事看管。
 某天突然收到一个现场的同事发来消息，说产品瘫痪了，界面进不去，然后就让运维查
