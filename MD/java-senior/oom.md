@@ -149,7 +149,7 @@ private KafkaConsumer<String,String> createConsumer(String ip,String topic,int p
 ```
 
 修改后重新发布执行，让运维连上`VisualVM`后，实时查看堆栈信息，已经能稳定维持了，问题处理到此结束。
-![](https://i.loli.net/2019/12/01/uOYPHTFzC6BJMna.jpg)
+![](https://i.loli.net/2019/12/01/5whPUNjfvIMJADs.jpg)
 
 
 **你的点赞与分享是对我最大的支持**
