@@ -1,13 +1,26 @@
-Redis Sentinel provides high availability for Redis. In practical terms this means that using Sentinel you can create a Redis deployment that resists without human intervention certain kinds of failures.
-
+Redis Sentinel provides high availability for Redis.
+In practical terms this means that using Sentinel you can create a Redis deployment that resists without human intervention certain kinds of failures.
+REDIS哨兵为REDIS提供了高可用。在实际场景中这意味着可以在脱离人工干预情况下下让REDIS拥有预防节点失败的能力。
 Redis Sentinel also provides other collateral tasks such as monitoring, notifications and acts as a configuration provider for clients.
-
+REDIS哨兵另外还提供了像是监控，通知和为客户端提供配置的附加功能。
 This is the full list of Sentinel capabilities at a macroscopical level (i.e. the big picture):
-
+这是宏观上哨兵能力的列表。
 Monitoring. Sentinel constantly checks if your master and replica instances are working as expected.
-Notification. Sentinel can notify the system administrator, or other computer programs, via an API, that something is wrong with one of the monitored Redis instances.
-Automatic failover. If a master is not working as expected, Sentinel can start a failover process where a replica is promoted to master, the other additional replicas are reconfigured to use the new master, and the applications using the Redis server are informed about the new address to use when connecting.
-Configuration provider. Sentinel acts as a source of authority for clients service discovery: clients connect to Sentinels in order to ask for the address of the current Redis master responsible for a given service. If a failover occurs, Sentinels will report the new address.
+监控。哨兵持续的检查主节点和备节点是否在工作状态。
+Notification. Sentinel can notify the system administrator, 
+or other computer programs, via an API, that something is wrong with one of the monitored Redis instances.
+通知。哨兵可以在被监控的实例出错时通过API通知到管理员或其他应用。
+Automatic failover. 
+If a master is not working as expected, Sentinel can start a failover process where a replica is promoted to master, 
+the other additional replicas are reconfigured to use the new master, 
+and the applications using the Redis server are informed about the new address to use when connecting.
+自动故障转移。当主节点失效时，哨兵能够开始故障转移程序，过程中一个备节点将被推举为主节点，
+其他节点将被重新配置为使用新的主节点工作，并且使用REDIS服务的应用在连接时也会被通知到新的主节点地址
+Configuration provider. Sentinel acts as a source of authority for clients service discovery:
+clients connect to Sentinels in order to ask for the address of the current Redis master responsible for a given service. 
+If a failover occurs, Sentinels will report the new address.
+配置提供者。在客户段服务哨兵作为一个可靠配置源：客户端通过连接到哨兵来获取到当前REDIS主节点地址一次获取到REDIS服务。当故障转移发生时，新的地址将被提供。
+
 Distributed nature of Sentinel
 Redis Sentinel is a distributed system:
 
