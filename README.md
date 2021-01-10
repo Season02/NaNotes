@@ -15,6 +15,9 @@
 ### JVM
 - [一次线上项目内存溢出问题处理实战](https://github.com/Season02/NaNotes/blob/master/MD/java-senior/oom.md)
 
+### Spring
+- [SpringBoot自动配置原理](https://github.com/Season02/NaNotes/blob/master/MD/java-senior/spring-boot-auto-config-concept.md)
+
 ### 附加技能
 
 
