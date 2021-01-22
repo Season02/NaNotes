@@ -19,7 +19,7 @@
 - [SpringBoot自动配置原理](https://github.com/Season02/NaNotes/blob/master/MD/java-senior/spring-boot-auto-config-concept.md)
 
 ### 有用的资源
-- [学习参考](https://github.com/Season02/NaNotes/blob/master/MD/ext/marks.md)
+- [优秀的文档](https://github.com/Season02/NaNotes/blob/master/MD/ext/marks.md)
 
 ### 附加技能
 
